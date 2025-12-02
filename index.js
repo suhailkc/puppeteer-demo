@@ -5,9 +5,12 @@ const URL = 'https://www.amazon.in/Electric-Instant-Boiling-Overheat-Protection/
 const TARGET_PRICE = 350;
 
 const checkPrice = async () => {
-  const browser = await puppeteer.launch({ headless: true });
+  const browser = await puppeteer.launch({ headless: false }); // ‼️ Amazon Blocks Headless Browsers, try headless "False" if Timeout Error appear.
   const page = await browser.newPage();
   await page.goto(URL, { waitUntil: 'domcontentloaded' });
+
+  // Take screenshot of the page
+  // await page.screenshot({ path: 'amazon.png', fullPage: false });
 
   // Wait for price element to apear
   await page.waitForSelector('.a-price .a-offscreen', { timeout: 10000 });
@@ -28,6 +31,6 @@ const checkPrice = async () => {
 };
 
 // Schedule every day at 9 AM
-cron.schedule('*/10 * * * * *', checkPrice);
+cron.schedule('0 9 * * *', checkPrice);
 
 checkPrice(); // run once immediately
